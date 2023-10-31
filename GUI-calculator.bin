@@ -1,0 +1,123 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class Calculator extends JFrame implements ActionListener {
+    private static final long serialVersionUID = 1L;
+    private JPanel panel;
+    private JTextField textfield;
+    private String operator;
+    private double num1, num2, result;
+
+    // Constructor
+    public Calculator() {
+        operator = "";
+        num1 = num2 = result = 0;
+
+        // Create a frame
+        JFrame frame = new JFrame("Calculator");
+
+        // Create a textfield
+        textfield = new JTextField();
+
+        // Set the textfield to non-editable
+        textfield.setEditable(false);
+
+        // Create number buttons and operators
+        JButton[] numberButtons = new JButton[10];
+        for (int i = 0; i < 10; i++) {
+            numberButtons[i] = new JButton(String.valueOf(i));
+        }
+
+        JButton addBtn = new JButton("+");
+        JButton subtractBtn = new JButton("-");
+        JButton multiplyBtn = new JButton("*");
+        JButton divideBtn = new JButton("/");
+        JButton equalsBtn = new JButton("=");
+        JButton clearBtn = new JButton("C");
+
+        // Create a panel to hold buttons
+        panel = new JPanel();
+        panel.setLayout(new GridLayout(4, 4));
+        panel.add(numberButtons[1]);
+        panel.add(numberButtons[2]);
+        panel.add(numberButtons[3]);
+        panel.add(addBtn);
+        panel.add(numberButtons[4]);
+        panel.add(numberButtons[5]);
+        panel.add(numberButtons[6]);
+        panel.add(subtractBtn);
+        panel.add(numberButtons[7]);
+        panel.add(numberButtons[8]);
+        panel.add(numberButtons[9]);
+        panel.add(multiplyBtn);
+        panel.add(clearBtn);
+        panel.add(numberButtons[0]);
+        panel.add(equalsBtn);
+        panel.add(divideBtn);
+
+        // Add action listeners to buttons
+        for (int i = 0; i < 10; i++) {
+            numberButtons[i].addActionListener(this);
+        }
+        addBtn.addActionListener(this);
+        subtractBtn.addActionListener(this);
+        multiplyBtn.addActionListener(this);
+        divideBtn.addActionListener(this);
+        clearBtn.addActionListener(this);
+        equalsBtn.addActionListener(this);
+
+        // Add components to the frame
+        frame.add(textfield, BorderLayout.NORTH);
+        frame.add(panel);
+
+        frame.setSize(300, 400);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        String command = e.getActionCommand();
+
+        if ((command.charAt(0) >= '0' && command.charAt(0) <= '9') || command.charAt(0) == '.') {
+            textfield.setText(textfield.getText() + command);
+        } else if (command.charAt(0) == 'C') {
+            textfield.setText("");
+            num1 = num2 = result = 0;
+            operator = "";
+        } else if (command.charAt(0) == '=') {
+            num2 = Double.parseDouble(textfield.getText());
+
+            switch (operator) {
+                case "+":
+                    result = num1 + num2;
+                    break;
+                case "-":
+                    result = num1 - num2;
+                    break;
+                case "*":
+                    result = num1 * num2;
+                    break;
+                case "/":
+                    result = num1 / num2;
+                    break;
+            }
+
+            textfield.setText(String.valueOf(result));
+            num1 = result;
+            operator = "";
+        } else {
+            if (!operator.isEmpty()) {
+                return;
+            }
+            num1 = Double.parseDouble(textfield.getText());
+            operator = command;
+            textfield.setText("");
+        }
+    }
+
+    public static void main(String[] args) {
+        new Calculator();
+    }
+}
